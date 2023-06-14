@@ -7,9 +7,8 @@ import {
 } from 'sequelize';
 import db from '.';
 
-
 class SequelizeUsers extends Model<InferAttributes<SequelizeUsers>,
-  InferCreationAttributes<SequelizeUsers>> {
+InferCreationAttributes<SequelizeUsers>> {
   declare id: CreationOptional<number>;
 
   declare username: string;
