@@ -5,7 +5,7 @@ import { ServiceResponse } from '../Interfaces/ServiceResponse';
 export default class TeamsService {
   constructor(
     private teamsModel: IteamsModel,
-  ){}
+  ) { }
 
   public async getAllTeams(): Promise<ServiceResponse<Iteams[]>> {
     const allTeams = await this.teamsModel.findAll();

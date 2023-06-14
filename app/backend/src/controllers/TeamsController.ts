@@ -1,12 +1,12 @@
+import { Request, Response } from 'express';
 import mapStatusHTTP from '../utils/mapStatusHTTP';
 import TeamsService from '../services/TeamsServices';
-import { Request, Response } from 'express';
-import modelTeams from '../model/TeamsModel';
+import ModelTeams from '../model/TeamsModel';
 
 export default class TeamsController {
   constructor(
-    private teamsService = new TeamsService(new modelTeams())
-    ) { }
+    private teamsService = new TeamsService(new ModelTeams()),
+  ) { }
 
   public async getAllTeams(_req: Request, res: Response) {
     const serviceResponse = await this.teamsService.getAllTeams();
