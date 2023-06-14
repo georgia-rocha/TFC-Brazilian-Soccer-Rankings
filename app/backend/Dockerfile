@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 3001
 RUN npm i
 ENTRYPOINT [ "npm", "run"]
-CMD ["start"]
+CMD ["dev"]
