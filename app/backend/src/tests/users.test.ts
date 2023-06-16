@@ -6,7 +6,7 @@ import * as jwt from 'jsonwebtoken';
 import * as chaiHttp from 'chai-http';
 
 import { App } from '../app';
-import { login, loginOnlyEmail, loginOnlyPassword, loginIncorrect } from './mocks/UserMocks';
+import { login, loginOnlyEmail, loginOnlyPassword, loginIncorrect, token } from './mocks/UserMocks';
 import mapStatusHTTP from '../utils/mapStatusHTTP';
 
 chai.use(chaiHttp);
@@ -45,6 +45,14 @@ describe('Testa a rota Login', function () {
     expect(response.status).to.be.equal(mapStatusHTTP('UNAUTHORIZED'));
     expect(response.body).to.be.deep.equal({ message: 'Invalid email or password' });
   });
+
+/*   it('Testa se retorna o role do usuário com o token válido', async () => {
+    const response = await chai.request(app).get('/login/validate').set('Authorization', token);
+
+    expect(response.status).to.be.equal(200);
+    expect(response.body).to.have.property('role');
+    expect(response.body.role).to.have.equal('user');
+  }); */
 
   afterEach(sinon.restore);
 });

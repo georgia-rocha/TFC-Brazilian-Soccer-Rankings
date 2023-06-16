@@ -11,6 +11,10 @@ export default function validateUser(req: Request, res: Response, next: NextFunc
     return res.status(mapStatusHTTP('INVALID_DATA')).json({ message: 'All fields must be filled' });
   }
 
+  if (password.length < 6) {
+    return res.status(mapStatusHTTP('UNAUTHORIZED')).json({ message: 'Invalid email or password' });
+  }
+
   if (!regex.test(email)) {
     return res.status(mapStatusHTTP('UNAUTHORIZED')).json({ message: 'Invalid email or password' });
   }

@@ -12,8 +12,8 @@ function validateToken(req: Request, res: Response, next: NextFunction) {
   }
 
   try {
-    jwt.verify(token, secret as string);
-
+    const verifyToken = jwt.verify(token, secret as string);
+    req.body.user = verifyToken;
     next();
   } catch (error) {
     console.log(error);
