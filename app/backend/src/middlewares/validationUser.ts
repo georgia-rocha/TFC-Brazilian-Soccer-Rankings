@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import mapStatusHTTP from '../utils/mapStatusHTTP';
 
-export default function validateUser(req: Request, res: Response, next: NextFunction) {
+export const validateUser = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
 
   const regex = /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/g;
@@ -19,4 +19,6 @@ export default function validateUser(req: Request, res: Response, next: NextFunc
     return res.status(mapStatusHTTP('UNAUTHORIZED')).json({ message: 'Invalid email or password' });
   }
   next();
-}
+};
+
+export default validateUser;

@@ -39,14 +39,14 @@ describe('Testa a rota Login', function () {
     expect(response.body).to.be.deep.equal({ message: 'All fields must be filled'});
   });
 
-  it('Testa o retorno, ao passar email errado', async () => {
+  it('Testa o retorno, ao passar email errado', async function() {
     const response = await chai.request(app).post('/login').send(loginIncorrect);
 
     expect(response.status).to.be.equal(mapStatusHTTP('UNAUTHORIZED'));
     expect(response.body).to.be.deep.equal({ message: 'Invalid email or password' });
   });
 
-  it('Testa se retorna o role do usuário com o token válido', async () => {
+  it('Testa se retorna o role do usuário com o token válido', async function() {
     const response = await chai.request(app).get('/login/role').set('authorization', token);
 
     expect(response.status).to.be.equal(200);

@@ -19,12 +19,7 @@ export default class UserController {
   };
 
   public getRole = async (req: Request, res: Response) => {
-    try {
-      const { role } = req.body.user;
-      return res.status(200).json({ role });
-    } catch (error) {
-      console.log(error, 'error');
-      return res.status(500).json('Algo deu errado!');
-    }
+    const { role } = req.body.user;
+    return res.status(200).json({ role });
   };
 }
