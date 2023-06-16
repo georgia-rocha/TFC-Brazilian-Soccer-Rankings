@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import mapStatusHTTP from '../utils/mapStatusHTTP';
-import TeamsService from '../services/TeamsServices';
+import TeamsService from '../services/TeamsService';
 import ModelTeams from '../model/TeamsModel';
 
 export default class TeamsController {
