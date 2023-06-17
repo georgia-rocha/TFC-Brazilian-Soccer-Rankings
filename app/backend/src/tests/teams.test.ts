@@ -16,8 +16,8 @@ const { app } = new App();
 
 const { expect } = chai;
 
-describe('Testa a rota Teams', function () {
-  it('Testa o retorno de getAllTeams', async function() {
+describe('Testa a rota Teams', () => {
+  it('Testa o retorno de getAllTeams',  async () => {
     sinon.stub(SequelizeTeams, 'findAll').resolves(teams as any);
 
     const { status, body } = await chai.request(app).get('/teams');
@@ -26,7 +26,7 @@ describe('Testa a rota Teams', function () {
     expect(body).to.deep.equal(teams);
   });
 
-  it('Testa o retorno da função getTeamById', async function() {
+  it('Testa o retorno da função getTeamById', async () => {
     sinon.stub(SequelizeTeams, 'findOne').resolves(team as any);
 
     const { status, body } = await chai.request(app).get('/teams/1');
@@ -35,7 +35,7 @@ describe('Testa a rota Teams', function () {
     expect(body).to.deep.equal(team);
   });
 
-  it('Testa se for passado um id inexistente na função getTeamById', async function() {
+  it('Testa se for passado um id inexistente na função getTeamById', async () => {
     sinon.stub(SequelizeTeams, 'findOne').resolves(null);
 
     const { status, body } = await chai.request(app).get('/teams/1');
