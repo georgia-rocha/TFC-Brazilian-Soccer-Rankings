@@ -26,4 +26,20 @@ export default class MatchesService {
     }
     return { status: 'SUCCESSFUL', data: matches };
   };
+
+  public getMatchesInProgress = async (inProgress: string) => {
+    const matches = await this.matchesModel.findAll({
+      where: { inProgress: inProgress === 'true' },
+      include: [{
+        model: SequelizeTeams,
+        as: 'homeTeam',
+        attributes: { exclude: ['id'] },
+      }, {
+        model: SequelizeTeams,
+        as: 'awayTeam',
+        attributes: { exclude: ['id'] },
+      }],
+    });
+    return { status: 'SUCCESSFUL', data: matches };
+  };
 }

@@ -51,7 +51,7 @@ SequelizeMatches.init({
     field: 'away_team_goals',
   },
   inProgress: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.BOOLEAN,
     allowNull: false,
     field: 'in_progress',
   },
