@@ -42,4 +42,9 @@ export default class MatchesService {
     });
     return { status: 'SUCCESSFUL', data: matches };
   };
+
+  public finishMatch = async (id: number) => {
+    const match = await this.matchesModel.update({ inProgress: false }, { where: { id } });
+    return { status: 'SUCCESSFUL', data: match };
+  };
 }
