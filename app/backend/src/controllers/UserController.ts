@@ -7,11 +7,11 @@ export default class UserController {
 
   public login = async (req: Request, res: Response) => {
     try {
-      const serviceResponse = await this.userService.login(req.body);
-      if (serviceResponse.status !== 'SUCCESSFUL') {
-        return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
+      const response = await this.userService.login(req.body);
+      if (response.status !== 'SUCCESSFUL') {
+        return res.status(mapStatusHTTP(response.status)).json(response.data);
       }
-      return res.status(200).json({ token: serviceResponse.data });
+      return res.status(mapStatusHTTP(response.status)).json({ token: response.data });
     } catch (error) {
       console.log(error, 'error');
       return res.status(500).json('Algo deu errado!');
