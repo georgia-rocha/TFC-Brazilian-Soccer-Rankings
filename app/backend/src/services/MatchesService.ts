@@ -1,5 +1,5 @@
 import { ModelStatic } from 'sequelize';
-import { Imatches } from '../Interfaces/matches/Imatches';
+import { Imatches, INewMatch } from '../Interfaces/matches/Imatches';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
 import SequelizeMatches from '../database/models/SequelizeMatches';
 import SequelizeTeams from '../database/models/SequelizeTeams';
@@ -52,5 +52,29 @@ export default class MatchesService {
     const match = await this.matchesModel
       .update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
     return { status: 'SUCCESSFUL', data: match };
+  };
+
+  public createMatch = async (data: INewMatch) => {
+    const { homeTeamId, awayTeamId } = data;
+
+    if (homeTeamId === awayTeamId) {
+      return {
+        status: 'INVALID_MATCH',
+        data: { message: 'It is not possible to create a match with two equal teams' },
+      };
+    }
+
+    const homeTeam = await SequelizeTeams.findOne({ where: { id: homeTeamId } });
+    const awayTeam = await SequelizeTeams.findOne({ where: { id: awayTeamId } });
+
+    if (!homeTeam || !awayTeam) {
+      return {
+        status: 'NOT_FOUND',
+        data: { message: 'There is no team with such id!' },
+      };
+    }
+
+    const match = await this.matchesModel.create({ ...data, inProgress: true });
+    return { status: 'CREATED', data: match };
   };
 }

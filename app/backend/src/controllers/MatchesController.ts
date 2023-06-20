@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-// import mapStatusHTTP from '../utils/mapStatusHTTP';
+import mapStatusHTTP from '../utils/mapStatusHTTP';
 import MatchesService from '../services/MatchesService';
 import SequelizeMatches from '../database/models/SequelizeMatches';
 
@@ -12,10 +12,10 @@ export default class MatchesController {
     const { inProgress } = req.query;
     if (inProgress) {
       const response = await this.matchesService.getMatchesInProgress(String(inProgress));
-      return res.status(200).json(response?.data);
+      return res.status(mapStatusHTTP(response.status)).json(response?.data);
     }
     const response = await this.matchesService.getAllMatches();
-    return res.status(200).json(response.data);
+    return res.status(mapStatusHTTP(response.status)).json(response.data);
   };
 
   public finishMatch = async (req: Request, res: Response) => {
@@ -30,5 +30,11 @@ export default class MatchesController {
     await this.matchesService
       .updateMatch(Number(homeTeamGoals), Number(awayTeamGoals), Number(id));
     return res.status(200).json({ message: 'Updated Match' });
+  };
+
+  public createMatch = async (req: Request, res: Response) => {
+    const { body } = req;
+    const response = await this.matchesService.createMatch(body);
+    return res.status(mapStatusHTTP(response.status)).json(response.data);
   };
 }
