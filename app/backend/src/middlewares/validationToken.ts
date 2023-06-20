@@ -12,11 +12,11 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    const verifyToken = jwt.verify(token, secret as string);
+    const verifyToken = jwt.verify(token, secret as jwt.Secret);
     req.body.user = verifyToken;
     next();
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(mapStatusHTTP('UNAUTHORIZED'))
       .json({ message: 'Token must be a valid token' });
   }

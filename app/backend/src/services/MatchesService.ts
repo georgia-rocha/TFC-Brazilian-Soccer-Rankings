@@ -47,4 +47,10 @@ export default class MatchesService {
     const match = await this.matchesModel.update({ inProgress: false }, { where: { id } });
     return { status: 'SUCCESSFUL', data: match };
   };
+
+  public updateMatch = async (homeTeamGoals: number, awayTeamGoals: number, id: number) => {
+    const match = await this.matchesModel
+      .update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
+    return { status: 'SUCCESSFUL', data: match };
+  };
 }
