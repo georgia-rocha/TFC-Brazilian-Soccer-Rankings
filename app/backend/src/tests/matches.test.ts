@@ -7,9 +7,10 @@ import * as chaiHttp from 'chai-http';
 
 import { App } from '../app';
 import SequelizeMatches from '../database/models/SequelizeMatches';
-import { matches, match2, match1 } from './mocks/MatchesMocks';
+import { matches, match2, match1, matchesMock } from './mocks/MatchesMocks';
 import { token } from '../tests/mocks/UserMocks';
 import SequelizeTeams from '../database/models/SequelizeTeams';
+import mapStatusHTTP from '../utils/mapStatusHTTP';
 
 // import { Response } from 'superagent';
 
@@ -25,8 +26,26 @@ describe('Testa a rota Matches', () => {
 
     const { status, body } = await chai.request(app).get('/matches');
 
-    expect(status).to.equal(200);
+    expect(status).to.equal(mapStatusHTTP('SUCCESSFUL'));
     expect(body).to.deep.equal(matches);
+  });
+
+  it('Testa o retorno de getAllMatches quando não é encontrado nenhum match',  async () => {
+    sinon.stub(SequelizeMatches, 'findAll').resolves([] as any);
+
+    const { status, body } = await chai.request(app).get('/matches');
+
+    expect(status).to.equal(mapStatusHTTP('NOT_FOUND'));
+    expect(body.message).to.deep.equal('Not found any matches');
+  });
+
+  it('Testa o retorno de getMatchesInProgress',  async () => {
+    sinon.stub(SequelizeMatches, 'findAll').resolves(matchesMock as any);
+
+    const { status, body } = await chai.request(app).get('/matches?inProgress=true');
+
+    expect(status).to.equal(mapStatusHTTP('SUCCESSFUL'));
+    expect(body).to.deep.equal(matchesMock);
   });
 
   it('Testa o retorno de finishMatch',  async () => {
@@ -34,7 +53,7 @@ describe('Testa a rota Matches', () => {
 
     const { status, body } = await chai.request(app).patch('/matches/:id/finish').send().set('authorization', token);
 
-    expect(status).to.equal(200);
+    expect(status).to.equal(mapStatusHTTP('SUCCESSFUL'));
     expect(body.message).to.deep.equal('Finished');
   });
   
@@ -43,7 +62,7 @@ describe('Testa a rota Matches', () => {
 
     const { status, body } = await chai.request(app).patch('/matches/:id').send().set('authorization', token);
 
-    expect(status).to.equal(200);
+    expect(status).to.equal(mapStatusHTTP('SUCCESSFUL'));
     expect(body.message).to.deep.equal('Updated Match');
   });
 
@@ -54,7 +73,7 @@ describe('Testa a rota Matches', () => {
 
     const { status, body } = await chai.request(app).post('/matches/').send(match1).set('authorization', token);
 
-    expect(status).to.equal(201);
+    expect(status).to.equal(mapStatusHTTP('CREATED'));
     expect(body).to.deep.equal(match2);
   });
 

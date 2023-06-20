@@ -7,6 +7,7 @@ import * as chaiHttp from 'chai-http';
 import { App } from '../app';
 import SequelizeTeams from '../database/models/SequelizeTeams';
 import { team, teams } from './mocks/TeamsMocks';
+import mapStatusHTTP from '../utils/mapStatusHTTP';
 
 // import { Response } from 'superagent';
 
@@ -31,7 +32,7 @@ describe('Testa a rota Teams', () => {
 
     const { status, body } = await chai.request(app).get('/teams/1');
 
-    expect(status).to.equal(200);
+    expect(status).to.equal(mapStatusHTTP('SUCCESSFUL'));
     expect(body).to.deep.equal(team);
   });
 
@@ -40,7 +41,7 @@ describe('Testa a rota Teams', () => {
 
     const { status, body } = await chai.request(app).get('/teams/1');
 
-    expect(status).to.equal(404);
+    expect(status).to.equal(mapStatusHTTP('NOT_FOUND'));
     expect(body.message).to.equal('Team 1 not found');
   });
 

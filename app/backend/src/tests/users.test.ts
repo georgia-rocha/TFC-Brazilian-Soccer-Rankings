@@ -19,39 +19,39 @@ const secret = process.env.JWT_SECRET || 'secret';
 
 describe('Testa a rota Login', () => {
   it('Testa o retorno do login', async () => {
-    const response = await chai.request(app).post('/login').send(login);
+    const { status, body } = await chai.request(app).post('/login').send(login);
 
-    expect(response.status).to.equal(mapStatusHTTP('SUCCESSFUL'));
-    expect(!!jwt.verify(response.body.token, secret)).to.be.equal(true);
+    expect(status).to.equal(mapStatusHTTP('SUCCESSFUL'));
+    expect(!!jwt.verify(body.token, secret)).to.be.equal(true);
   });
 
   it('Testa o retorno do login caso não seja passado um email', async () => {
-    const response = await chai.request(app).post('/login').send(loginOnlyPassword);
+    const { status, body } = await chai.request(app).post('/login').send(loginOnlyPassword);
 
-    expect(response.status).to.equal(mapStatusHTTP('INVALID_DATA'));
-    expect(response.body).to.be.deep.equal({ message: 'All fields must be filled'});
+    expect(status).to.equal(mapStatusHTTP('INVALID_DATA'));
+    expect(body).to.be.deep.equal({ message: 'All fields must be filled'});
   });
 
   it('Testa o retorno do login caso não seja passado um password', async () => {
-    const response = await chai.request(app).post('/login').send(loginOnlyEmail);
+    const { status, body }= await chai.request(app).post('/login').send(loginOnlyEmail);
 
-    expect(response.status).to.equal(mapStatusHTTP('INVALID_DATA'));
-    expect(response.body).to.be.deep.equal({ message: 'All fields must be filled'});
+    expect(status).to.equal(mapStatusHTTP('INVALID_DATA'));
+    expect(body).to.be.deep.equal({ message: 'All fields must be filled'});
   });
 
   it('Testa o retorno, ao passar email errado',async () => {
-    const response = await chai.request(app).post('/login').send(loginIncorrect);
+    const { status, body } = await chai.request(app).post('/login').send(loginIncorrect);
 
-    expect(response.status).to.be.equal(mapStatusHTTP('UNAUTHORIZED'));
-    expect(response.body).to.be.deep.equal({ message: 'Invalid email or password' });
+    expect(status).to.be.equal(mapStatusHTTP('UNAUTHORIZED'));
+    expect(body).to.be.deep.equal({ message: 'Invalid email or password' });
   });
 
   it('Testa se retorna o role do usuário com o token válido', async () => {
-    const response = await chai.request(app).get('/login/role').set('authorization', token);
+    const { status, body } = await chai.request(app).get('/login/role').set('authorization', token);
 
-    expect(response.status).to.be.equal(200);
-    expect(response.body).to.have.property('role');
-    expect(response.body.role).to.have.equal('user');
+    expect(status).to.equal(mapStatusHTTP('SUCCESSFUL'));
+    expect(body).to.have.property('role');
+    expect(body.role).to.have.equal('user');
   });
 
   afterEach(sinon.restore);
