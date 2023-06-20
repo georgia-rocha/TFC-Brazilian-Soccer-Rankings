@@ -47,7 +47,7 @@ describe('Testa a rota Matches', () => {
     expect(body.message).to.deep.equal('Updated Match');
   });
 
-  it.only('Testa a função createMatch',  async () => {
+  it('Testa a função createMatch',  async () => {
     sinon.stub(SequelizeMatches, 'create').resolves(match2 as any);
     sinon.stub(SequelizeTeams, 'findOne').resolves({ id: 1, teamName: 'Xablau' } as any);
     sinon.stub(jwt, 'verify').returns({} as any);
