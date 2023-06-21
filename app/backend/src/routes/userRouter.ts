@@ -7,7 +7,11 @@ const userController = new UserController();
 
 const router = Router();
 
-router.post('/', validate, (req: Request, res: Response) => userController.login(req, res));
+router.post(
+  '/',
+  validate,
+  (req: Request, res: Response) => userController.login(req, res),
+);
 
 router.get(
   '/role',
