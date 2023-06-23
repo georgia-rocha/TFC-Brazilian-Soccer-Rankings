@@ -1,15 +1,16 @@
-// import { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import SequelizeMatches from '../database/models/SequelizeMatches';
-import MatchesService from '../services/MatchesService';
-// import mapStatusHTTP from '../utils/mapStatusHTTP';
+import SequelizeTeams from '../database/models/SequelizeTeams';
+import LeaderboardService from '../services/LeaderboardService';
+import mapStatusHTTP from '../utils/mapStatusHTTP';
 
 export default class LeaderboardController {
   constructor(
-    private matcherService = new MatchesService(SequelizeMatches),
+    private leaderboardService = new LeaderboardService(SequelizeMatches, SequelizeTeams),
   ) {}
 
-/*   public getAllTeamsHome = async (req: Request, res: Response) => {
-    const response = await this.matcherService.getAllTeamsHome();
+  public getAllTeamsHome = async (req: Request, res: Response) => {
+    const response = await this.leaderboardService.getLeaderBoards();
     return res.status(mapStatusHTTP(response.status)).json(response.data);
-  }; */
+  };
 }

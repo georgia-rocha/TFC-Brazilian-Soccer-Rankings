@@ -1,11 +1,12 @@
 export interface Ileaderboard {
-  id?: number
-  name: string,
-  totalPoints: number,
-  totalGames: number,
-  totalVictories: number,
-  totalDraws: number,
-  totalLosses: number,
-  goalsFavor: number,
-  goalsOwn: number,
+  goalsFavor: number;
+  goalsOwn: number;
+  goalsBalance: number;
+  name: string | undefined;
+  totalPoints: number;
+  totalGames: number;
+  totalVictories: number;
+  totalDraws: number;
+  totalLosses: number;
+  efficiency: number;
 }
