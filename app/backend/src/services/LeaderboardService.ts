@@ -1,5 +1,5 @@
 import { ModelStatic } from 'sequelize';
-import { Iteams } from '../Interfaces/teams/Iteams';
+// import { Iteams } from '../Interfaces/teams/Iteams';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
 import SequelizeMatches from '../database/models/SequelizeMatches';
 import SequelizeTeams from '../database/models/SequelizeTeams';
@@ -15,26 +15,20 @@ export default class LeaderboardService {
     this.matchesService = new MatchesService(this.matchesModel);
   }
 
-  private getTeamName = (teams: Iteams[], homeTeamId: number) =>
-    teams.find((team) => team.id === homeTeamId)?.teamName;
-
-  private getTotalGames = (matches: SequelizeMatches[][], team: SequelizeMatches): number => {
-    const total = matches.find((game) => game[0].dataValues.homeTeamId === team.id);
+  private getTotalGames = (matches: SequelizeMatches[], team: SequelizeTeams): number => {
+    const total = matches.filter((game) => game.dataValues.homeTeamId === team.id);
     return total ? total.length : 0;
   };
 
-  private getResults = (matches: SequelizeMatches[][], team: SequelizeMatches) => {
-    const homeTeamMatches = matches
-      .filter((match) => match[0].dataValues.homeTeamId === team.id)[0];
-    const totalVictories = homeTeamMatches
+  private getResults = (matches: SequelizeMatches[]) => {
+    const totalVictories = matches
       .filter((match) =>
-        match.dataValues.homeTeamGoals > match.dataValues.awayTeamGoals
-        || match.dataValues.awayTeamGoals > match.dataValues.homeTeamGoals)
-      .map((v) => v.dataValues).length;
-    const totalDraws = homeTeamMatches
-      .filter((match) => match.dataValues.homeTeamGoals === match.dataValues.awayTeamGoals).length;
-    const totalLosses = homeTeamMatches
-      .filter((match) => match.dataValues.homeTeamGoals < match.dataValues.awayTeamGoals).length;
+        match.homeTeamGoals > match.awayTeamGoals)
+      .map((v) => v).length;
+    const totalDraws = matches
+      .filter((match) => match.homeTeamGoals === match.awayTeamGoals).length;
+    const totalLosses = matches
+      .filter((match) => match.homeTeamGoals < match.awayTeamGoals).length;
     return {
       totalVictories,
       totalDraws,
@@ -46,12 +40,18 @@ export default class LeaderboardService {
   (victories: number, draws: number): number => victories * 3 + draws;
 
   private getGoalsFavor = (matches: SequelizeMatches[], teamId: number): number => {
+    if (teamId === 11) {
+      // console.log(mapTeams.map((match) => match));
+      console.log(teamId);
+      console.log(matches.length);
+    }
+
     let goalsFavor = 0;
     matches.forEach((match) => {
-      if (match.dataValues.awayTeamId === teamId) {
-        goalsFavor += match.dataValues.awayTeamGoals;
-      } else if (match.dataValues.homeTeamId === teamId) {
-        goalsFavor += match.dataValues.homeTeamGoals;
+      if (match.awayTeamId === teamId) {
+        goalsFavor += match.awayTeamGoals;
+      } else if (match.homeTeamId === teamId) {
+        goalsFavor += match.homeTeamGoals;
       }
     });
     return goalsFavor;
@@ -60,10 +60,10 @@ export default class LeaderboardService {
   private getGoalsOwn = (matches: SequelizeMatches[], teamId: number): number => {
     let goalsOwn = 0;
     matches.forEach((match) => {
-      if (match.dataValues.awayTeamId === teamId) {
-        goalsOwn += match.dataValues.homeTeamGoals;
-      } else if (match.dataValues.homeTeamId === teamId) {
-        goalsOwn += match.dataValues.awayTeamGoals;
+      if (match.awayTeamId === teamId) {
+        goalsOwn += match.homeTeamGoals;
+      } else if (match.homeTeamId === teamId) {
+        goalsOwn += match.awayTeamGoals;
       }
     });
     return goalsOwn;
@@ -84,20 +84,19 @@ export default class LeaderboardService {
     Number(((points / (games * 3)) * 100).toFixed(2));
 
   public leaderBoardInfo = (
-    mapTeams: SequelizeMatches[][],
-    team: SequelizeMatches,
-    teams: Iteams[],
+    team: SequelizeTeams,
     matches: SequelizeMatches[],
   ) => {
-    const totalGames = this.getTotalGames(mapTeams, team);
-    const { totalDraws, totalVictories } = this.getResults(mapTeams, team);
+    const totalGames = this.getTotalGames(matches, team);
+    console.log(`${team.teamName} :`, matches.length);
+    const { totalDraws, totalVictories } = this.getResults(matches);
     const totalPoints = this.getTotalPoints(totalVictories, totalDraws);
     return ({
-      name: this.getTeamName(teams, team.dataValues.homeTeamId),
+      name: team.teamName,
       totalPoints,
       totalGames,
-      ...this.getResults(mapTeams, team),
-      ...this.getGoals(matches, team.dataValues.id),
+      ...this.getResults(matches),
+      ...this.getGoals(matches, team.id),
       efficiency: this.getEfficiency(totalPoints, totalGames),
     });
   };
@@ -107,8 +106,9 @@ export default class LeaderboardService {
     const teams = await this.teamsModel.findAll();
 
     const mapTeams = teams.map((team) => matches.filter((match) => match.homeTeamId === team.id));
+    console.log(mapTeams[11].length);
     const leaderboard: Ileaderboard[] = (
-      mapTeams.map((team) => this.leaderBoardInfo(mapTeams, team[0], teams, matches)))
+      teams.map((team) => this.leaderBoardInfo(team, mapTeams[team.dataValues.id - 1])))
       .sort((a, b) =>
         b.totalPoints - a.totalPoints
           || b.totalVictories - a.totalVictories
