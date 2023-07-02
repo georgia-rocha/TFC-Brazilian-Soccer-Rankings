@@ -1,5 +1,4 @@
 import { ModelStatic } from 'sequelize';
-// import { Iteams } from '../Interfaces/teams/Iteams';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
 import SequelizeMatches from '../database/models/SequelizeMatches';
 import SequelizeTeams from '../database/models/SequelizeTeams';
@@ -40,12 +39,6 @@ export default class LeaderboardService {
   (victories: number, draws: number): number => victories * 3 + draws;
 
   private getGoalsFavor = (matches: SequelizeMatches[], teamId: number): number => {
-    if (teamId === 11) {
-      // console.log(mapTeams.map((match) => match));
-      console.log(teamId);
-      console.log(matches.length);
-    }
-
     let goalsFavor = 0;
     matches.forEach((match) => {
       if (match.awayTeamId === teamId) {

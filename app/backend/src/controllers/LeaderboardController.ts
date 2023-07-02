@@ -12,6 +12,14 @@ export default class LeaderboardController {
     private leaderboardAwayService = new LeaderboardAwayService(SequelizeMatches, SequelizeTeams),
   ) {}
 
+  /*   public getAllTeams = async (req: Request, res: Response) => {
+    const home = await this.leaderboardHomeService.getLeaderBoardsHome();
+    const away = await this.leaderboardAwayService.getLeaderBoardsAway();
+    const response = [...home.data, away.data];
+
+    return res.status(mapStatusHTTP(away.status)).json(response);
+  }; */
+
   public getAllTeamsHome = async (req: Request, res: Response) => {
     const response = await this.leaderboardHomeService.getLeaderBoardsHome();
     return res.status(mapStatusHTTP(response.status)).json(response.data);
