@@ -1,5 +1,4 @@
 import { ModelStatic } from 'sequelize';
-// import { Iteams } from '../Interfaces/teams/Iteams';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
 import SequelizeMatches from '../database/models/SequelizeMatches';
 import SequelizeTeams from '../database/models/SequelizeTeams';
@@ -16,19 +15,19 @@ export default class LeaderboardService {
   }
 
   private getTotalGames = (matches: SequelizeMatches[], team: SequelizeTeams): number => {
-    const total = matches.filter((game) => game.dataValues.homeTeamId === team.id);
+    const total = matches.filter((game) => game.dataValues.awayTeamId === team.id);
     return total ? total.length : 0;
   };
 
   private getResults = (matches: SequelizeMatches[]) => {
     const totalVictories = matches
       .filter((match) =>
-        match.homeTeamGoals > match.awayTeamGoals)
+        match.homeTeamGoals < match.awayTeamGoals)
       .map((v) => v).length;
     const totalDraws = matches
       .filter((match) => match.homeTeamGoals === match.awayTeamGoals).length;
     const totalLosses = matches
-      .filter((match) => match.homeTeamGoals < match.awayTeamGoals).length;
+      .filter((match) => match.homeTeamGoals > match.awayTeamGoals).length;
     return {
       totalVictories,
       totalDraws,
@@ -40,18 +39,12 @@ export default class LeaderboardService {
   (victories: number, draws: number): number => victories * 3 + draws;
 
   private getGoalsFavor = (matches: SequelizeMatches[], teamId: number): number => {
-    if (teamId === 11) {
-      // console.log(mapTeams.map((match) => match));
-      console.log(teamId);
-      console.log(matches.length);
-    }
-
     let goalsFavor = 0;
     matches.forEach((match) => {
-      if (match.awayTeamId === teamId) {
-        goalsFavor += match.awayTeamGoals;
-      } else if (match.homeTeamId === teamId) {
+      if (match.homeTeamId === teamId) {
         goalsFavor += match.homeTeamGoals;
+      } else if (match.awayTeamId === teamId) {
+        goalsFavor += match.awayTeamGoals;
       }
     });
     return goalsFavor;
@@ -60,10 +53,10 @@ export default class LeaderboardService {
   private getGoalsOwn = (matches: SequelizeMatches[], teamId: number): number => {
     let goalsOwn = 0;
     matches.forEach((match) => {
-      if (match.awayTeamId === teamId) {
-        goalsOwn += match.homeTeamGoals;
-      } else if (match.homeTeamId === teamId) {
+      if (match.homeTeamId === teamId) {
         goalsOwn += match.awayTeamGoals;
+      } else if (match.awayTeamId === teamId) {
+        goalsOwn += match.homeTeamGoals;
       }
     });
     return goalsOwn;
@@ -101,11 +94,11 @@ export default class LeaderboardService {
     });
   };
 
-  public getLeaderBoards = async (): Promise<ServiceResponse<Ileaderboard[]>> => {
+  public getLeaderBoardsAway = async (): Promise<ServiceResponse<Ileaderboard[]>> => {
     const matches = (await this.matchesModel.findAll({ where: { inProgress: false } }));
     const teams = await this.teamsModel.findAll();
 
-    const mapTeams = teams.map((team) => matches.filter((match) => match.homeTeamId === team.id));
+    const mapTeams = teams.map((team) => matches.filter((match) => match.awayTeamId === team.id));
     console.log(mapTeams[11].length);
     const leaderboard: Ileaderboard[] = (
       teams.map((team) => this.leaderBoardInfo(team, mapTeams[team.dataValues.id - 1])))
@@ -116,13 +109,5 @@ export default class LeaderboardService {
           || b.goalsFavor - a.goalsFavor);
 
     return { status: 'SUCCESSFUL', data: leaderboard };
-  };
-
-  public getAllTeamsAway = async () => {
-    const matches = (await this.matchesModel.findAll({ where: { inProgress: false } }));
-    const teams = await this.teamsModel.findAll();
-    const mapTeams = teams.map((team) => matches.filter((match) => match.homeTeamId === team.id));
-
-    return { status: 'SUCCESSFUL', data: mapTeams };
   };
 }
