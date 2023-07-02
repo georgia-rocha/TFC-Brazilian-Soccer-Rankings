@@ -117,4 +117,12 @@ export default class LeaderboardService {
 
     return { status: 'SUCCESSFUL', data: leaderboard };
   };
+
+  public getAllTeamsAway = async () => {
+    const matches = (await this.matchesModel.findAll({ where: { inProgress: false } }));
+    const teams = await this.teamsModel.findAll();
+    const mapTeams = teams.map((team) => matches.filter((match) => match.homeTeamId === team.id));
+
+    return { status: 'SUCCESSFUL', data: mapTeams };
+  };
 }

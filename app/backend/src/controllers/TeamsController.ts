@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import mapStatusHTTP from '../utils/mapStatusHTTP';
 import TeamsService from '../services/TeamsService';
-import ModelTeams from '../model/TeamsModel';
+import SequelizeTeams from '../database/models/SequelizeTeams';
 
 export default class TeamsController {
   constructor(
-    private teamsService = new TeamsService(new ModelTeams()),
+    private teamsService = new TeamsService(SequelizeTeams),
   ) { }
 
   public getAllTeams = async (_req: Request, res: Response) => {
