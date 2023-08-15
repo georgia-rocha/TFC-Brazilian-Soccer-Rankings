@@ -81,7 +81,6 @@ export default class LeaderboardService {
     matches: SequelizeMatches[],
   ) => {
     const totalGames = this.getTotalGames(matches, team);
-    console.log(`${team.teamName} :`, matches.length);
     const { totalDraws, totalVictories } = this.getResults(matches);
     const totalPoints = this.getTotalPoints(totalVictories, totalDraws);
     return ({
@@ -99,7 +98,6 @@ export default class LeaderboardService {
     const teams = await this.teamsModel.findAll();
 
     const mapTeams = teams.map((team) => matches.filter((match) => match.homeTeamId === team.id));
-    console.log(mapTeams[11].length);
     const leaderboard: Ileaderboard[] = (
       teams.map((team) => this.leaderBoardInfo(team, mapTeams[team.dataValues.id - 1])))
       .sort((a, b) =>
