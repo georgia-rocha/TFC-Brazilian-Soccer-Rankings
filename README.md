@@ -1,7 +1,7 @@
 # Boas vindas ao repositório do projeto TFC 🚀
  # O que foi desenvolvido 👩‍🎓
 
-  O TFC é um site informativo sobre partidas e classificações de futebol! soccer
+  O TFC é um site informativo sobre partidas e classificações de futebol! ⚽
 
   Nesse projeto, foi construido um back-end dockerizado que é consumido por um front-end já desenvolvido. com a modelagem de dados através do Sequelize e respeitando as regras de negócio.
   Esse projeto tem 4 entidades que são importantes para sua estrutura, são elas:
@@ -107,5 +107,5 @@ Na sua máquina você deve ter:
 - [x] 5- Desenvolvi o endpoint /leaderboard/away, de forma que é possível filtrar as classificações dos times quando visitantes na tela de classificação do front-end, com os dados iniciais do banco de dados, incluindo as propriedades goalsBalance e efficiency, além das propriedades do requisito anterior;
 - [x] 6- Desenvolvi o endpoint /leaderboard/away de forma que é possível filtrar as classificações dos times quando visitantes na tela de classificação do front-end e atualizar a tabela ao inserir a partida Corinthians 2 X 1 Internacional;
       
-### Desenvolvi testes que cubrem no mínimo 80 por cento dos arquivos em /app/backend/src e contém mais de 100 linhas cobertas.
+### Desenvolvi testes que cobrem no mínimo 80 por cento dos arquivos em /app/backend/src e contém mais de 100 linhas cobertas.
 
